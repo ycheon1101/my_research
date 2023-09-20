@@ -7,7 +7,7 @@ import torch
 
 # params
 learning_rate = 0.01
-num_epochs = 501
+num_epochs = 701
 
 # set the target
 # target = img_flatten
@@ -45,5 +45,7 @@ for epoch in range(num_epochs):
         # print(generated)
         generated = generated.permute(1, 2, 0).detach().numpy()
         plt.imshow(generated)
-        plt.show()
+        # plt.show()
+        plt.pause(10)
+        plt.close()
 model.eval()
