@@ -8,7 +8,7 @@ import pdb
 crop_size = 400
 
 # get image
-img = imageio.imread('ca.jpg')[...,:3]/255. 
+img = imageio.imread('ca.jpg')[...,:3]/255.
 # plt.imshow(img)
 # plt.show()
 
@@ -35,8 +35,8 @@ img_crop.detach().numpy()
 # print(img_crop.shape)
 
 
-# plt.imshow(img_crop)
-# plt.show()
+plt.imshow(img_crop)
+plt.show()
 
 # create the mesh grid
 xy_range = list(map(lambda x: (x / (crop_size - 1) * 2) - 1, range(crop_size)))
