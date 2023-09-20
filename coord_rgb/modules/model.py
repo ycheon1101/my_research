@@ -22,7 +22,8 @@ class MLP(nn.Module):
 
             # layer 3
             nn.Linear(hidden_features, out_features),
-            nn.Tanh()
+            # nn.Tanh()
+            nn.Sigmoid()
 
         )
 
@@ -30,7 +31,7 @@ class MLP(nn.Module):
         return self.neural_net(x)
 
 # declare network
-net = MLP(in_features=2, hidden_features=500, out_features=3)
+net = MLP(in_features=2, hidden_features=200, out_features=3)
 
 model = net
 
