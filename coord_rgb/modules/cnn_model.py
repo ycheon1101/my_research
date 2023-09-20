@@ -1,5 +1,5 @@
 import torch.nn as nn
-from img_dataset import crop_size
+
 
 class CNN(nn.Module):
     def __init__(self, in_features, hidden_features, out_features):
