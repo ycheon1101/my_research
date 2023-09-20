@@ -20,7 +20,7 @@ img_flatten = torch.reshape(img_cropped, (crop_size * crop_size, 3))
 
 
 # test
-img_crop = img_cropped.permute(1, 2, 0)
+# img_crop = img_cropped.permute(1, 2, 0)
 # img_crop = img_flatten.view( crop_size, crop_size, 3)
 
 
@@ -31,12 +31,12 @@ img_crop = img_cropped.permute(1, 2, 0)
 # img_crop =torch.reshape(img_flatten, (crop_size, crop_size, 3))
 # img_crop = img_flatten.unsqueeze(0)
 # img_crop = img_crop.reshape(img_crop, (crop_size, crop_size, 3))
-img_crop.detach().numpy()
+# img_crop.detach().numpy()
 # print(img_crop.shape)
 
 
-plt.imshow(img_crop)
-plt.show()
+# plt.imshow(img_crop)
+# plt.show()
 
 # create the mesh grid
 xy_range = list(map(lambda x: (x / (crop_size - 1) * 2) - 1, range(crop_size)))
