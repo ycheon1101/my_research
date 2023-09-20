@@ -1,5 +1,5 @@
 import torch
-import imageio
+import imageio.v2 as imageio
 from PIL import Image
 import torchvision.transforms as transforms
 import numpy as np
@@ -13,27 +13,27 @@ import torch.nn.functional as F
 
 
 ####### Create a small MLP ##########
-class MLP(torch.nn.Module):
-    def __init__(
-        self,
-        in_features: int,
-        hidden_features: int,
-        hidden_layers: int,
-        out_features: int
-    ):
-        super().__init__()
-        out_features = out_features if out_features is not None else hidden_features
-        self.net = torch.nn.Sequential(
-            torch.nn.Linear(in_features, hidden_features),
-            torch.nn.ReLU(),
-            *[torch.nn.Sequential(
-                torch.nn.Linear(hidden_features, hidden_features),
-                torch.nn.ReLU()
-            ) for _ in range(hidden_layers)],
-            torch.nn.Linear(hidden_features, out_features)
-        )
-    def forward(self, x: torch.Tensor):
-        return self.net(x)
+# class MLP(torch.nn.Module):
+#     def __init__(
+#         self,
+#         in_features: int,
+#         hidden_features: int,
+#         hidden_layers: int,
+#         out_features: int
+#     ):
+#         super().__init__()
+#         out_features = out_features if out_features is not None else hidden_features
+#         self.net = torch.nn.Sequential(
+#             torch.nn.Linear(in_features, hidden_features),
+#             torch.nn.ReLU(),
+#             *[torch.nn.Sequential(
+#                 torch.nn.Linear(hidden_features, hidden_features),
+#                 torch.nn.ReLU()
+#             ) for _ in range(hidden_layers)],
+#             torch.nn.Linear(hidden_features, out_features)
+#         )
+#     def forward(self, x: torch.Tensor):
+#         return self.net(x)
 
 
 
@@ -68,12 +68,12 @@ def main():
 
     # 6. Try one forward
     #recons_im = torch.reshape(net(xy_flat), (crop_size, crop_size,3))
-    loss = net(xy_flat) - im_flat
+    # loss = net(xy_flat) - im_flat
 
 
     ########## TRAIN!
-    for epoch in range(nb_epochs):
-        XXXX = 1 
+    # for epoch in range(nb_epochs):
+    #     XXXX = 1 
 
 main()
 
