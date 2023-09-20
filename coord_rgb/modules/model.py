@@ -31,3 +31,8 @@ class MLP(nn.Module):
 
 # declare network
 net = MLP(in_features=2, hidden_features=500, out_features=3)
+
+model = net
+
+# print(model)
+
