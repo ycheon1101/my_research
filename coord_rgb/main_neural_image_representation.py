@@ -130,7 +130,7 @@ class MLP(torch.nn.Module):
 def main():
 
     #0. params 
-    crop_size = 256
+    crop_size = 400
     nb_epochs = 200
     learning_rate = 5e-3
 
@@ -201,11 +201,15 @@ def main():
     # Denormalizing the pixel values
     recons_im = recons_im * 255.0
     recons_im = recons_im.detach().permute(1, 2, 0).numpy()  # Change to [256, 256, 3] for displaying and saving
+
+    print(recons_im)
     recons_im_pil = Image.fromarray(recons_im.astype(np.uint8))
-    recons_im_pil.save('reconstructed_image.jpg')
+    recons_im_pil.save('reconstructed_image_5.jpg')
 
 
 
 if __name__ == "__main__":
     main()
+    
+    
 
