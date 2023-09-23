@@ -8,13 +8,14 @@ import numpy as np
 
 # params
 crop_size = 400
+# crop_size = 1100
 
 # get image
 # img = imageio.imread('ca.jpg')[...,:3]/255.
-# img = imageio.imread('ca.jpg')/255.
-img = imageio.imread('ca.jpg') /255.
-im = imageio.imread('ca.jpg') /255.
-print(f'img shape: {img.shape}')
+img = imageio.imread('ca.jpg')/255.
+# img = imageio.imread('ca.jpg') /255.
+# img = imageio.imread('rangY.jpg') / 255.
+# print(f'img shape: {img.shape}')
 # print(f'img: {img}')
 # img = torch.tensor(img)
 # img = torch.reshape(img, (412 * 550, 3))

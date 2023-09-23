@@ -63,8 +63,10 @@ for epoch in range(num_epochs):
 # [160000, 3]
 # print(f'generated shape: {generated.shape}')
 
+generated_reshape = model(xy_flatten) 
+generated_reshape = torch.reshape(generated_reshape, (crop_size, crop_size, 3))
 # generated_reshape = model(xy_flatten) 
-generated_reshape = torch.reshape(generated, (crop_size, crop_size, 3))
+# generated_reshape = torch.reshape(generated, (crop_size, crop_size, 3))
 # generated_reshape = generated_reshape.permute(2, 0, 1) * 255.0
 
 # generated_reshape = generated_reshape.permute(1, 2, 0)
