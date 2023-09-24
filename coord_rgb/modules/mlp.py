@@ -2,7 +2,7 @@ import torch.nn as nn
 import torch
 
 class MLP(nn.Module):
-    def __init__ (self, in_feature, hidden_feature, hidden_layers, out_feature):
+    def __init__ (self, in_feature: int, hidden_feature: int, hidden_layers: int, out_feature: int):
         super().__init__()
 
         # first layer
@@ -27,12 +27,13 @@ class MLP(nn.Module):
             nn.Sigmoid()
         ]
 
+
         for _ in range(hidden_layers):
             layers.extend(hidden_layer_list)
         
         layers.extend(out_layer_list)
 
-        self.net = nn.Sequential(*layers)
+        self.net = torch.nn.Sequential(*layers)
 
     def forward(self, x):
         return self.net(x)
