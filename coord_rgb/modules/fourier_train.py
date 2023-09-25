@@ -8,6 +8,7 @@ import torch
 import numpy as np
 from fourier import GaussianFourier
 from PIL import Image
+from train import losses_train
 
 # params
 learning_rate = 5e-3
@@ -29,6 +30,9 @@ criterion = nn.MSELoss()
 
 # Model MLP instanciation
 
+# list for storing MSE losses
+losses = []
+
 
 # optimizer
 optimizer = optim.Adam(model.parameters(), lr=learning_rate) 
@@ -45,9 +49,12 @@ for epoch in range(num_epochs):
     # loss = criterion(generated, target)
     loss = criterion(generated, img_flatten)
 
+
     optimizer.zero_grad()
     loss.backward()
     optimizer.step()
+
+    losses.append(loss.item())
 
     print(f"Epoch {epoch+1}/{num_epochs}, Loss: {loss.item()}")
 
@@ -68,4 +75,21 @@ plt.show()
 # save image
 # image_store = Image.fromarray(generated_reshape.astype(np.uint8))
 # image_store.save('scale_4_hidden_128.jpg')
+
+# psnr
+max_pixel = 1.0
+psnr_fourier = [10 * np.log10(max_pixel ** 2 / mse) for mse in losses]
+psnr = [10 * np.log10(max_pixel ** 2 / mse) for mse in losses_train]
+
+plt.figure(figsize=(10, 5))
+plt.plot(psnr_fourier, label="PSNR_fourier")
+plt.plot(psnr, label="PSNR")
+plt.xlabel("Epochs")
+plt.ylabel("PSNR")
+plt.legend()
+plt.grid(True)
+plt.title("PSNR")
+plt.show()
+
+
 

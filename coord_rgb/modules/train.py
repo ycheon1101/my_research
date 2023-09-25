@@ -25,6 +25,9 @@ model = net
 # optimizer
 optimizer = optim.Adam(model.parameters(), lr=learning_rate) 
 
+# list for losses
+losses_train = []
+
 for epoch in range(num_epochs):
 
     # model.train()
@@ -40,6 +43,8 @@ for epoch in range(num_epochs):
     optimizer.zero_grad()
     loss.backward()
     optimizer.step()
+
+    losses_train.append(loss.item())
 
     print(f"Epoch {epoch+1}/{num_epochs}, Loss: {loss.item()}")
 
