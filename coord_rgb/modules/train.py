@@ -1,6 +1,6 @@
 from img_dataset import img_flatten, xy_flatten, crop_size
 # from model import model
-from mlp import model
+from mlp import MLP
 import torch.optim as optim
 import torch.nn as nn
 import matplotlib.pyplot as plt
@@ -18,6 +18,9 @@ target = img_flatten
 
 # calc loss
 criterion = nn.MSELoss() 
+
+net = MLP(in_feature=2, hidden_feature=32, hidden_layers=8, out_feature=3)
+model = net 
 
 # optimizer
 optimizer = optim.Adam(model.parameters(), lr=learning_rate) 
