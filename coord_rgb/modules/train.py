@@ -15,6 +15,7 @@ num_epochs = 300
 # set the target
 # target = img_flatten
 target = img_flatten
+print(f'img_faltten shape: {img_flatten.shape}')
 
 # calc loss
 criterion = nn.MSELoss() 
@@ -35,7 +36,7 @@ for epoch in range(num_epochs):
     # for mlp
     generated = model(xy_flatten)
     # generated = generated.permute(2, 0, 1)
-    # print(f'generated_shape: {generated.shape}')
+    print(f'generated_shape: {generated.shape}')
 
     # loss = criterion(generated, target)
     loss = criterion(generated, img_flatten)

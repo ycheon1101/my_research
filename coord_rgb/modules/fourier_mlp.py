@@ -1,9 +1,12 @@
 import torch.nn as nn
 import torch
 
+
 class MLP(nn.Module):
     def __init__ (self, in_feature: int, hidden_feature: int, hidden_layers: int, out_feature: int):
         super().__init__()
+
+        hidden_layer = []
 
         # first layer
         layers = [
@@ -13,6 +16,8 @@ class MLP(nn.Module):
                 # nn.Dropout(p=0.5)
         ]
 
+        
+
         # last layer
         out_layer_list = [
             nn.Linear(hidden_feature, out_feature),
@@ -21,12 +26,13 @@ class MLP(nn.Module):
 
         # hidden layers
         for _ in range(hidden_layers):
-            layers.extend([
+            hidden_layer.extend([
                 nn.Linear(hidden_feature, hidden_feature),
                 nn.BatchNorm1d(hidden_feature),
                 nn.ReLU()
             ])
         
+        layers.extend(hidden_layer)
         layers.extend(out_layer_list)
 
         self.net = torch.nn.Sequential(*layers)
@@ -39,6 +45,7 @@ class MLP(nn.Module):
 # net = MLP(in_feature=256, hidden_feature=32, hidden_layers=8, out_feature=3)
 
 # net = MLP(in_feature=256, hidden_feature=128, hidden_layers=8, out_feature=3)
+
 
 
 
