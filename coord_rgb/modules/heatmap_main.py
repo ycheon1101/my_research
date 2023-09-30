@@ -10,6 +10,7 @@ from fourier import GaussianFourier
 from PIL import Image
 import seaborn as sns
 # from train import losses_train
+import pandas as pd
 
 # params
 learning_rate = 5e-3
@@ -52,25 +53,30 @@ num_layer, num_data, num_neuron = hidden_layer_features.size()
 
 # get data and append to list
 for layer in range(num_layer):
-    layer_hit_map = []
+    layer_heat_map = []
     for neuron in range(num_neuron):
         heatmap_data = hidden_layer_features[layer, :, neuron]
-        layer_hit_map.append(heatmap_data)
+        layer_heat_map.append(heatmap_data)
     # len(heat_map) : 8, len(heat_map[0]): 128
-    heat_map.append(layer_hit_map)
+    heat_map.append(layer_heat_map)
 
 # print(f'heatmap: {len(heat_map[0])}')
 
-fig, axes = plt.subplots(num_layer, figsize=(10, 8))
-for layer, heatmap_data in enumerate(heat_map):
-    # print(f'heatmap_data: {heatmap_data}')
-    heatmap_data = [data.detach().numpy() for data in heatmap_data]
-    # heatmap_data = torch.tensor(heatmap_data).detach().numpy()
-    sns.heatmap(heatmap_data, ax=axes[layer], cmap="YlGnBu", xticklabels=False, yticklabels=False)
-    axes[layer].set_title(f'Layer {layer+1} Heatmap')
+# fig, axes = plt.subplots(num_layer, figsize=(10, 8))
+# for layer, heatmap_data in enumerate(heat_map):
+#     # print(f'heatmap_data: {heatmap_data}')
+#     heatmap_data = [data.detach().numpy() for data in heatmap_data]
+#     # heatmap_data = torch.tensor(heatmap_data).detach().numpy()
+#     sns.heatmap(heatmap_data, ax=axes[layer], cmap="YlGnBu", xticklabels=False, yticklabels=False)
+#     axes[layer].set_title(f'Layer {layer+1} Heatmap')
 
-plt.tight_layout()
-plt.show()
+# plt.tight_layout()
+# plt.show()
+
+# make pandas table
+hidden_layer_df = pd.DataFrame(heat_map)
+# print(hidden_layer_df)
+sns.heatmap(hidden_layer_df)
 
 
 
