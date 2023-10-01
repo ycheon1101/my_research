@@ -10,8 +10,9 @@ import torch
 import numpy as np
 from fourier import GaussianFourier
 from PIL import Image
-import seaborn
-# from train import losses_train
+import seaborn as sns
+import pandas as pd
+
 
 # params
 learning_rate = 5e-3
@@ -20,95 +21,65 @@ hidden_feature = 128
 hidden_layers = 8
 max_pixel = 1.0
 
+
+# create layer and neuron list
+neuron_list = [16, 32, 64, 128, 256, 512]
+hidden_layer_list = [1, 2, 4, 6, 8, 10]
+# neuron_list = [16, 32]
+# hidden_layer_list = [1, 2]
+
+
+
 # set the target
-# target = img_flatten
+# target shape = [crop_size * crop_size, 3]
 target = img_flatten
+# print(target.shape)
 
 # fourier (mapping size = in_feature / 2)
 fourier_result = GaussianFourier(num_input_channels=2, mapping_size = 128, scale=4)(xy_flatten)
 
-net = MLP(in_feature=256, hidden_feature=hidden_feature, hidden_layers=hidden_layers, out_feature=3)
-
-model = net
-
 # calc loss
 criterion = nn.MSELoss() 
 
-# Model MLP instanciation
+# initialize psnr_list 
+psnr_list = np.zeros((len(neuron_list), len(hidden_layer_list)))
 
-# list for storing MSE losses
-# losses = []
+# train for num_neuron * num_hidden_layer
+for layer in range(len(hidden_layer_list)):
+    for neuron in range(len(neuron_list)):
 
-# initialize psnr_list
-psnr_list = np.zeros((hidden_feature, hidden_layers))
+        net = MLP(in_feature=256, hidden_feature=neuron_list[neuron], hidden_layers=hidden_layer_list[layer], out_feature=3)
 
+        model = net
 
+        optimizer = optim.Adam(model.parameters(), lr=learning_rate) 
 
-# optimizer
-optimizer = optim.Adam(model.parameters(), lr=learning_rate) 
+        for epoch in range(num_epochs):
 
-for epoch in range(num_epochs):
+            generated = model(fourier_result)
+            loss = criterion(generated, img_flatten)
 
-    # model.train()
+            # optimize
+            optimizer.zero_grad()
+            loss.backward()
+            optimizer.step()
 
-    # for mlp
-    generated = model(fourier_result)
-    # generated = generated.permute(2, 0, 1)
-    print(f'generated_shape: {generated.shape}')
-    print(f'img_faltten shape: {img_flatten.shape}')
+        # calc psnr
+        max_pixel = 1.0
+        calc_psnr = 10 * torch.log10(max_pixel ** 2 / loss)
+        psnr_list[layer, neuron] = calc_psnr
 
-    # loss = criterion(generated, target)
-    loss = criterion(generated, img_flatten)
+        print(f"layer: {hidden_layer_list[layer]}, neuron: {neuron_list[neuron]}, Loss: {loss.item()}, calc_psnr: {calc_psnr}")
 
+# make table
+hidden_layer_df = pd.DataFrame(psnr_list, index=hidden_layer_list, columns=neuron_list)
+# hidden_layer_df.set_index(neuron_list)
+# print(hidden_layer_df)
 
-    optimizer.zero_grad()
-    loss.backward()
-    optimizer.step()
-
-    # losses.append(loss.item())
-    # assign psnr to psnr_list
-    # for idx_hidden_feature in range(hidden_feature):
-    #     for idx_hidden_layers in range(hidden_layers):
-    #         calc_psnr = 10 * torch.log10(max_pixel ** 2 / loss)
-    #         # print(type(calc_psnr))
-    #         psnr_list[idx_hidden_feature, idx_hidden_layers] = calc_psnr
-
-
-    print(f"Epoch {epoch+1}/{num_epochs}, Loss: {loss.item()}")
-
-# reshape with final generated
-generated_reshape = model(fourier_result) 
-generated_reshape = torch.reshape(generated_reshape, (crop_size, crop_size, 3))
-
-
-# for save image
-# generated_reshape = generated_reshape * 255.
-generated_reshape = generated_reshape.detach().numpy()
-
-
-# show image
-plt.imshow(generated_reshape)
+# generate heatmap
+plt.figure(figsize=(15, 8))
+heatmap = sns.heatmap(hidden_layer_df, cmap='GnBu', xticklabels=True, yticklabels=True)
+plt.xlabel('neurons')
+plt.ylabel('layers')
+plt.title('heatmap')
 plt.show()
-
-# save image
-# image_store = Image.fromarray(generated_reshape.astype(np.uint8))
-# image_store.save('scale_4_hidden_128.jpg')
-
-# psnr
-# max_pixel = 1.0
-# psnr_fourier = [10 * np.log10(max_pixel ** 2 / mse) for mse in losses]
-# psnr = [10 * np.log10(max_pixel ** 2 / mse) for mse in losses_train]
-
-# plt.figure(figsize=(10, 5))
-# # plt.plot(psnr_list, label="PSNR")
-# seaborn.heatmap(psnr_list, xticklabels=hidden_feature, yticklabels=hidden_layers)
-# plt.xlabel("hidden_feature")
-# plt.ylabel("hidden_layer")
-# plt.grid(True)
-# plt.title("PSNR")
-# plt.show()
-
-
-
-
-
