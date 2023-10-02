@@ -1,6 +1,7 @@
 import sys
 sys.path.append('/Users/yerin/Desktop/my_research/coord_rgb/modules')
 from img_dataset import img_flatten, xy_flatten, crop_size
+# import img_dataset
 # from model import model
 from fourier_mlp import MLP
 import torch.optim as optim
