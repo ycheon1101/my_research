@@ -74,14 +74,22 @@ def main():
 
             print(f"layer: {hidden_layer_list[layer]}, neuron: {neuron_list[neuron]}, Loss: {loss.item()}, calc_psnr: {calc_psnr}")
 
+            # Getting the output from the network and reshaping it
+            generated_img = model(fourier_result)
+            generated_reshape = torch.reshape(generated_img, (crop_size, crop_size, 3))
+
+            generated_reshape = generated_reshape * 255.0
+            generated_reshape = generated_reshape.detach().numpy()
+
+            save_img = Image.fromarray(generated_reshape.astype(np.uint8))
+            save_img.save('reconstructed_image_test.jpg')
+
     # make table
     hidden_layer_df = pd.DataFrame(psnr_list, index=hidden_layer_list, columns=neuron_list)
-    # hidden_layer_df.set_index(neuron_list)
-    # print(hidden_layer_df)
 
     # generate heatmap
     plt.figure(figsize=(15, 8))
-    heatmap = sns.heatmap(hidden_layer_df, cmap='GnBu', xticklabels=True, yticklabels=True)
+    sns.heatmap(hidden_layer_df, cmap='GnBu', xticklabels=True, yticklabels=True)
     plt.xlabel('neurons')
     plt.ylabel('layers')
     plt.title('heatmap')

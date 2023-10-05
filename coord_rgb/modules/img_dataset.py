@@ -13,7 +13,8 @@ crop_size = 400
 
 
 # get image
-img = imageio.imread('ca.jpg')/255.
+# img = imageio.imread('ca.jpg')/255.
+img = imageio.imread('img1.jpeg')/255.
 
 # convert to tensor
 img_tensor = torch.Tensor(img).permute(2, 0, 1)

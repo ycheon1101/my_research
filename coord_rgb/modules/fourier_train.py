@@ -52,8 +52,8 @@ for epoch in range(num_epochs):
     # for mlp
     generated = model(fourier_result)
     # generated = generated.permute(2, 0, 1)
-    print(f'generated_shape: {generated.shape}')
-    print(f'img_faltten shape: {img_flatten.shape}')
+    # print(f'generated_shape: {generated.shape}')
+    # print(f'img_faltten shape: {img_flatten.shape}')
 
     # loss = criterion(generated, target)
     loss = criterion(generated, img_flatten)

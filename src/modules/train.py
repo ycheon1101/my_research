@@ -1,5 +1,3 @@
-import sys
-sys.path.append('/Users/yerin/Desktop/my_research/src/modules')
 # return image data frame and crop_size
 import table_images
 from mlp import MLP
@@ -23,10 +21,9 @@ optimizer = optim.Adam(model.parameters(), lr=learning_rate)
 
 # set target
 img_df, crop_size = table_images.make_table()
-for image in range(1, len(img_df.index) + 1):
-    target = img_df['img_flatten'][image]
-    xy_flatten = img_df['xy_flatten'][image]
 
+# train model
+def train_model(target, xy_flatten):
     for epoch in range(num_epochs):
 
         # generate
@@ -40,7 +37,10 @@ for image in range(1, len(img_df.index) + 1):
         optimizer.step()
 
         print(f"Epoch {epoch+1}/{num_epochs}, Loss: {loss.item()}")
+    
 
+# plot
+def plot_img(xy_flatten):
     # reshape the generated tensor to [h, w, c]
     generated_reshape = model(xy_flatten) 
     generated_reshape = torch.reshape(generated_reshape, (crop_size, crop_size, 3))
@@ -52,5 +52,15 @@ for image in range(1, len(img_df.index) + 1):
     plt.imshow(generated_reshape)
     plt.show()
 
-        
-        
+# main
+def main():
+
+    for image in range(1, len(img_df.index) + 1):
+        target = img_df['img_flatten'][image]
+        xy_flatten = img_df['xy_flatten'][image]
+
+        train_model(target, xy_flatten)
+        plot_img(xy_flatten)
+
+# main()
+            

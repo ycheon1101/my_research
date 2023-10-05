@@ -1,6 +1,1 @@
-# params
-learning_rate = 5e-3
-num_epochs = 300
-hidden_feature = 128
-hidden_layers = 8
-max_pixel = 1.0
+GaussianFourier(num_input_channels=2, mapping_size = 128, scale=4)(xy_flatten)
