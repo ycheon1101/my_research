@@ -12,6 +12,7 @@ from PIL import Image
 import seaborn as sns
 import pandas as pd
 import os
+import time
 
 
 def main():
@@ -22,10 +23,10 @@ def main():
     max_pixel = 1.0
 
     # create layer and neuron list
-    neuron_list = [16, 32, 64, 128, 256, 512]
-    hidden_layer_list = [1, 2, 4, 6, 8, 10]
-    # neuron_list = [128]
-    # hidden_layer_list = [8]
+    # neuron_list = [16, 32, 64, 128, 256, 512]
+    # hidden_layer_list = [1, 2, 4, 6, 8, 10]
+    neuron_list = [16, 32]
+    hidden_layer_list = [1, 2]
 
     # get images
     img_df, crop_size = table_images.make_table()
@@ -50,12 +51,16 @@ def main():
         # calc loss
         criterion = nn.MSELoss()
 
-        # initialize psnr_list
+        # initialize psnr_list and train_time_list
         psnr_list = np.zeros((len(neuron_list), len(hidden_layer_list)))
+        train_time_list = np.zeros((len(neuron_list), len(hidden_layer_list)))
 
         # train from num_neuron * num_hidden_layer
         for layer in range(len(hidden_layer_list)):
             for neuron in range(len(neuron_list)):
+
+                # start time
+                start_time = time.time()
 
                 model = MLP(in_feature=256, hidden_feature=neuron_list[neuron], hidden_layers=hidden_layer_list[layer], out_feature=3)
 
@@ -71,13 +76,21 @@ def main():
                     loss.backward()
                     optimizer.step()
 
-                    print(f"Epoch {epoch+1}/{num_epochs}, Loss: {loss.item()}")
+                    print(f"Image{image}, Epoch {epoch+1}/{num_epochs}, layer: {hidden_layer_list[layer]}, neuron: {neuron_list[neuron]}, Loss: {loss.item()}")
+                
+                # end time
+                end_time = time.time()
+
+                # calc train time
+                train_time = end_time - start_time
+
+                print(f'Image{image} trian time: {train_time}')
+
+                train_time_list[neuron, layer] = train_time
 
                 # calc psnr
                 calc_psnr = 10 * torch.log10(max_pixel ** 2 / loss)
                 psnr_list[layer, neuron] = calc_psnr
-
-                print(f"layer: {hidden_layer_list[layer]}, neuron: {neuron_list[neuron]}, Loss: {loss.item()}, calc_psnr: {calc_psnr}")
 
                 # Getting the output from the network and reshaping it
                 generated_img = model(fourier_result)
@@ -93,16 +106,29 @@ def main():
 
         # make table
         hidden_layer_df = pd.DataFrame(psnr_list, index=hidden_layer_list, columns=neuron_list)
+        train_time_df = pd.DataFrame(train_time_list, index=hidden_layer_list, columns=neuron_list)
 
-        # generate heatmap and save
+        # generate psnr heatmap and save
         plt.figure(figsize=(15, 8))
-        heat_map = sns.heatmap(hidden_layer_df, cmap='GnBu', annot=True, annot_kws={'size':10}, fmt='.3f', xticklabels=True, yticklabels=True)
+        heat_map_psnr = sns.heatmap(hidden_layer_df, cmap='GnBu', annot=True, annot_kws={'size':10}, fmt='.3f', xticklabels=True, yticklabels=True)
         plt.xlabel('neurons')
         plt.ylabel('layers')
-        plt.title('heatmap_img' + str(image))
+        plt.title('psnr_heatmap_img' + str(image))
 
-        heatmap_image_path = os.path.join(dir_path + img_dir, f'heatmap_image_{image}.jpg')
-        heat_map.figure.savefig(heatmap_image_path)
+        heatmap_image_path = os.path.join(dir_path + img_dir, f'psnr_heatmap_image_{image}.jpg')
+        heat_map_psnr.figure.savefig(heatmap_image_path)
+
+        # generate time heatmap and save
+        plt.figure(figsize=(15, 8))
+        heat_map_time = sns.heatmap(train_time_df, cmap='GnBu', annot=True, annot_kws={'size':10}, fmt='.3f', xticklabels=True, yticklabels=True)
+        plt.xlabel('neurons')
+        plt.ylabel('layers')
+        plt.title('time_heatmap_img' + str(image))
+
+        heatmap_image_path = os.path.join(dir_path + img_dir, f'time_heatmap_image_{image}.jpg')
+        heat_map_time.figure.savefig(heatmap_image_path)
+
+
 
 if __name__ == '__main__':
     main()

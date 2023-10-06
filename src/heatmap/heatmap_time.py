@@ -51,7 +51,7 @@ def main():
         # calc loss
         criterion = nn.MSELoss()
 
-        # initialize psnr_list
+        # initialize train_time_list
         train_time_list = np.zeros((len(neuron_list), len(hidden_layer_list)))
 
         # train from num_neuron * num_hidden_layer
@@ -92,7 +92,7 @@ def main():
 
         # generate heatmap and save
         plt.figure(figsize=(15, 8))
-        heat_map = sns.heatmap(train_time_df, cmap='GnBu', annot = True, annot_kws={"size": 10}, xticklabels=True, yticklabels=True)
+        heat_map = sns.heatmap(train_time_df, cmap='GnBu', annot=True, annot_kws={'size':10}, fmt='.3f', xticklabels=True, yticklabels=True)
         plt.xlabel('neurons')
         plt.ylabel('layers')
         plt.title('time_heatmap_img' + str(image))
