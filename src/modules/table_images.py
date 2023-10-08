@@ -23,7 +23,7 @@ def make_table():
 
     # get all images
     for img_file in file_list:
-        img, crop_size, img_flatten, xy_flatten, img_cropped = img_dataset.img_data(dir_path + '/', img_file)
+        _, crop_size, img_flatten, xy_flatten, _ = img_dataset.img_data(dir_path + '/', img_file)
 
         img_data = {
             'img_file' : img_file,
